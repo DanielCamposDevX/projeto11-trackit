@@ -26,7 +26,7 @@ export default function Login(props) {
             promisse.then(() => {
                 setRequest(promisse.data);
                 console.log(promisse);
-                navigate("/hábitos")
+                navigate("/habitos")
             })
     
         }
