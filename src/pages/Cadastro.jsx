@@ -1,54 +1,43 @@
-import { useState, useContext } from "react";
+import { createContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import styled from "styled-components";
 import logo from '../assets/Group 8.png'
-import { RequestContext } from "../context/RequestContext";
+import axios from "axios";
+import { useContext } from "react";
 
 
 
 
-export default function Login(props) {
+export default function Cadastro(){
 
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
-    const { request,setRequest } = useContext(RequestContext);
+    const [nome, setNome] = useState("");
+    const [foto, setFoto] = useState("");
+
+
     const navigate = useNavigate();
 
-
-
-    function login(event) {
-        
+    function Signup(event){
         event.preventDefault();
-        
-        const promisse = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login", { email: email, password: senha })
-            
-            promisse.then(() => {
-                setRequest(promisse.data);
-                console.log(promisse);
-                navigate("/hábitos")
-            })
-    
-        }
-
-
-
-    function handleSignup() {
-        navigate("/cadastro");
-        console.log('funfa');
+        const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up",{ email: email, name: nome, image: foto, password: senha});
+        request.then(() => navigate("/"));
+        request.catch("Deu ruuim");
     }
-
 
     return (
         <>
             <Container>
                 <Logo src={logo} />
-                <form onSubmit={login}>
+                <form onSubmit={Signup}>
                     <input required type="email" placeholder="email" value={email} onChange={e => setEmail(e.target.value)} />
                     <input required type="password" placeholder="senha" value={senha} onChange={e => setSenha(e.target.value)} />
-                    <Submit type="submit">Entrar</Submit>
+                    <input required type="text" placeholder="nome" value={nome} onChange={e => setNome(e.target.value)} />
+                    <input required type="url" placeholder="foto" value={foto} onChange={e => setFoto(e.target.value)} />
+                    <Submit type="submit">Cadastrar</Submit>
                 </form>
-                <A onClick={handleSignup}>Não tem uma conta? Cadastre-se!</A>
+                <A onClick={() => navigate("/")}>Já tem uma conta? Faça login!</A>
+                
             </Container>
         </>
 
@@ -128,8 +117,3 @@ const Submit = styled.button`
     font-size: 21px;
     line-height: 26px;
 `
-
-
-
-
-
