@@ -12,30 +12,28 @@ export default function Login(props) {
 
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
-    const { request,setRequest } = useContext(RequestContext);
+    const { request,setRequest,setToken } = useContext(RequestContext);
     const navigate = useNavigate();
 
 
 
-    function login(event) {
+ function login(event) {
         
         event.preventDefault();
-        
-        const promisse = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login", { email: email, password: senha })
+
+        const promisse =  axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login", { email: email, password: senha })
             
-            promisse.then(() => {
-                setRequest(promisse.data);
-                console.log(promisse);
-                navigate("/habitos")
-            })
+        promisse.then(response => {
+            setRequest(response.data);
+            navigate("/habitos")
+        })
     
-        }
+    }
 
 
 
     function handleSignup() {
         navigate("/cadastro");
-        console.log('funfa');
     }
 
 

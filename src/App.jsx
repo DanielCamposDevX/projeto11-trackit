@@ -5,9 +5,10 @@ import Habitos from './pages/Habitos'
 import Hoje from './pages/Hoje'
 import reset from './reset.jsx'
 import styled, { createGlobalStyle } from 'styled-components'
-import { Routes, BrowserRouter , Route } from 'react-router-dom'
+import { Routes, BrowserRouter, Route, useLocation } from 'react-router-dom'
 import { RequestProvider } from './context/RequestContext'
 import perfil from './assets/TrackIt.png'
+import { useEffect } from 'react'
 
 export default function App() {
 
@@ -15,9 +16,8 @@ export default function App() {
   return (
     <RequestProvider>
       <Reset />
-      {window.location.pathname !== "/" && <Header><img src={perfil} /> <Perfil src="" /></Header>}
-      {window.location.pathname !== "/" && <Footer><button>Hábitos</button> <Circle>Hoje</Circle> <button>Histórico</button></Footer>}
       <BrowserRouter>
+        <HeaderAndFooter />
         <Routes>
           <Route element={<Login />} path="/" />
           <Route element={<Cadastro />} path="/cadastro" />
@@ -29,7 +29,31 @@ export default function App() {
     </RequestProvider>
   )
 }
+function HeaderAndFooter() {
+  const location = useLocation();
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
+
+  if (location.pathname === "/") {
+    return null;
+  }
+
+  return (
+    <>
+      <Header>
+        <img src={perfil} alt="Profile" />
+        <Perfil src="" />
+      </Header>
+      <Footer>
+        <button>Hábitos</button>
+        <Circle>Hoje</Circle>
+        <button>Histórico</button>
+      </Footer>
+    </>
+  );
+}
 
 
 
