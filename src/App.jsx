@@ -5,13 +5,14 @@ import Habitos from './pages/Habitos'
 import Hoje from './pages/Hoje'
 import reset from './reset.jsx'
 import styled, { createGlobalStyle } from 'styled-components'
-import { Routes, BrowserRouter, Route, useLocation } from 'react-router-dom'
+import { Routes, BrowserRouter, Route, useLocation, useNavigate } from 'react-router-dom'
 import { RequestProvider } from './context/RequestContext'
 import perfil from './assets/TrackIt.png'
 import { useEffect } from 'react'
 
 export default function App() {
 
+ 
 
   return (
     <RequestProvider>
@@ -31,6 +32,7 @@ export default function App() {
 }
 function HeaderAndFooter() {
   const location = useLocation();
+  const navigate = useNavigate();;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -47,9 +49,9 @@ function HeaderAndFooter() {
         <Perfil src="" />
       </Header>
       <Footer>
-        <button>Hábitos</button>
-        <Circle>Hoje</Circle>
-        <button>Histórico</button>
+        <button onClick={() => {navigate('/habitos')}}>Hábitos</button>
+        <Circle onClick={() => {navigate('/hoje')}}>Hoje</Circle>
+        <button onClick={() => {navigate('/historico')}}>Histórico</button>
       </Footer>
     </>
   );

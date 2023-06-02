@@ -3,7 +3,7 @@ import axios from "axios";
 import { IoAddOutline } from 'react-icons/io5'
 import { useContext, useEffect, useState } from "react";
 import { RequestContext } from "../context/RequestContext";
-import { UNSAFE_useScrollRestoration } from "react-router-dom";
+import { BsFillTrash3Fill } from 'react-icons/bs'
 
 export default function Habitos() {
 
@@ -11,8 +11,10 @@ export default function Habitos() {
     const [clicked, setClicked] = useState([false, false, false, false, false, false, false]);
     const [expand, setExpand] = useState(false);
     const [nome, setNome] = useState("");
-    const {request} = useContext(RequestContext);
-    const [habits,setHabits] = useState(false);
+    const [habits, setHabits] = useState([]);
+    const { request } = useContext(RequestContext);
+
+    
 
     useEffect(() => {
         const config = {
@@ -21,8 +23,8 @@ export default function Habitos() {
             }
         }
         const promisse = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits",config);
-        promisse.then(response => {setHabits(promisse.data)});
-    },[])
+        promisse.then(response => { setHabits(response.data) });
+    }, [])
 
     function handleClick(i) {
         setClicked(prevClicked => {
@@ -32,11 +34,24 @@ export default function Habitos() {
         });
     }
 
-
+    function handleDelete(id) {
+        const config = {
+            headers: {
+                "Authorization": `Bearer ${request.token}`
+            }
+        }
+        const promisse = axios.delete(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}`, config);
+        promisse.then(() => {
+            const promisse2 = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
+            promisse2.then(response => { setHabits(response.data) });
+        })
+    }
 
     function Expandclick() {
         if (expand) {
             setExpand(false);
+            setNome("");
+            setClicked([false, false, false, false, false, false, false]);
         }
         else {
             setExpand(true);
@@ -53,9 +68,17 @@ export default function Habitos() {
         const posicoesTrue = clicked
             .map((elemento, index) => elemento ? index : null)
             .filter(posicao => posicao !== null);
-        const promisse = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits",{name:nome,days:posicoesTrue},config);
-        promisse.then(console.log(promisse))
-        setExpand(false);
+
+        const promisse = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", { name: nome, days: posicoesTrue }, config);
+        promisse.then(() => {
+            Expandclick();
+
+            const promisse2 = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
+            promisse2.then(response => {
+                setHabits(response.data)
+            })
+        });
+
     }
 
 
@@ -70,10 +93,22 @@ export default function Habitos() {
                         <Day type="button" onClick={() => handleClick(index)} key={index} clicked={clicked[index]}>{day}</Day>
                     ))}
                 </Holder>
-                <Holder><Cancelar type="Reset">Cancelar</Cancelar> <Salvar type="Submit">Salvar</Salvar></Holder>
+                <Holder><Cancelar type="Reset" onClick={Expandclick}>Cancelar</Cancelar> <Salvar type="Submit">Salvar</Salvar></Holder>
             </form></Card>}
-            {habits && <h1>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</h1>}
-            
+            {habits.map((habit) => (
+                <Card1 key={habit.id}>
+                    <Holder1>{habit.name}<A onClick={() => handleDelete(habit.id)}><BsFillTrash3Fill /></A></Holder1>
+                    <Holder1>
+                        {days.map((day, index) => (
+                            <Day key={index} style={{ backgroundColor: habit.days.includes(index) ? '#DBDBDB' : '#FFFFFF', color: habit.days.includes(index) ? '#FFFFFF' : '#DBDBDB' }}>
+                                {day}
+                            </Day>
+                        ))}
+                    </Holder1>
+                </Card1>
+            ))}
+            {habits.length == 0 && <h1>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</h1>}
+
         </Content>
 
     )
@@ -136,7 +171,7 @@ const Upper = styled.div`
 const Card = styled.div`
     width: 92%;
     background-color: white;
-    min-height: 180px;
+    min-height: 91px;
     border-radius: 5px;
     display: flex;
     flex-direction: column;
@@ -153,6 +188,7 @@ const Card = styled.div`
         height:45px;
         border: 1px solid #d4d4d4;
         border-radius: 5px;
+        margin-left: 20px;
         ::placeholder{
             color: #dbdbdb;
             font-family: 'Lexend Deca', sans-serif;
@@ -212,5 +248,41 @@ const Salvar = styled.button`
     font-family: 'Lexend Deca', sans-serif;
     font-weight: 400;
     font-size: 16px;
-    margin-left: 20px`
+    margin-left: 20px;
+    margin-right:20px;
+    `
 
+const Card1 = styled.div`
+    width: 92%;
+    background-color: white;
+    min-height: 91px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    position:relative;
+    `
+
+const Holder1 = styled.div`
+    display:flex;
+    flex-direction: row;
+    justify-content: left;
+    align-items: center;
+    font-family: 'Lexend Deca', sans-serif;
+    font-size: 20px;
+    font-weight:400;
+    margin-left: 40px;
+    margin-top: 10px;
+    width:100%;
+    
+
+`
+const A = styled.button`
+ position:absolute;
+ top: 10px;
+ right: 10px;
+ font-size:20px;
+ background-color:transparent;
+ border:none;
+`

@@ -27,6 +27,7 @@ export default function Login(props) {
             setRequest(response.data);
             navigate("/habitos")
         })
+        promisse.catch(() => alert("Conta não existe"))
     
     }
 
