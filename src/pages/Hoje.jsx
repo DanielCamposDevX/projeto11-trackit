@@ -4,9 +4,9 @@ import axios from "axios";
 import { RequestContext } from "../context/RequestContext";
 
 export default function Hoje() {
-  const { request, check,setCheck,total,setTotal} = useContext(RequestContext);
+  const { request, check, setCheck, total, setTotal } = useContext(RequestContext);
   const [habits, setHabits] = useState([]);
-  let done = false;
+  const [checkin, setCheckin] = useState([]);
 
   useEffect(() => {
     const config = {
@@ -30,13 +30,21 @@ export default function Hoje() {
         "Authorization": `Bearer ${request.token}`
       }
     }
-    done = !done;
-    if (done) {
-      const promisse = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/check`,null, config)
-      promisse.then();
+    const prevCheckin = [...checkin];
+    if (!prevCheckin.includes(id)) {
+      prevCheckin.push(id);
+      setCheckin(prevCheckin);
+      const promisse = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/check`, null, config)
+      promisse.then(setCheck(check + 1));
+      promisse.catch();
     }
     else {
-      const promisse = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/uncheck`,null, config)
+      const updatedCheckin = prevCheckin.filter(item => item !== id);
+      setCheckin(updatedCheckin);
+      const promisse = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/uncheck`, null, config)
+      promisse.then(setCheck(check - 1));
+      promisse.catch();
+
     }
   }
 

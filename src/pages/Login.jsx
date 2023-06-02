@@ -12,12 +12,12 @@ export default function Login(props) {
 
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
-    const { request,setRequest,setToken } = useContext(RequestContext);
+    const { request,setRequest } = useContext(RequestContext);
     const navigate = useNavigate();
 
 
 
- function login(event) {
+    function login(event) {
         
         event.preventDefault();
 
@@ -30,8 +30,6 @@ export default function Login(props) {
         promisse.catch(() => alert("Conta não existe"))
     
     }
-
-
 
     function handleSignup() {
         navigate("/cadastro");

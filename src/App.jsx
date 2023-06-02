@@ -6,16 +6,18 @@ import Hoje from './pages/Hoje'
 import reset from './reset.jsx'
 import styled, { createGlobalStyle } from 'styled-components'
 import { Routes, BrowserRouter, Route, useLocation, useNavigate } from 'react-router-dom'
-import { RequestProvider } from './context/RequestContext'
+import { RequestContext } from './context/RequestContext'
 import perfil from './assets/TrackIt.png'
-import { useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 
 export default function App() {
 
- 
+
 
   return (
-    <RequestProvider>
+    <>
       <Reset />
       <BrowserRouter>
         <HeaderAndFooter />
@@ -27,20 +29,31 @@ export default function App() {
           <Route element={<Historico />} path="/historico" />
         </Routes>
       </BrowserRouter>
-    </RequestProvider>
+    </>
   )
 }
+
+
 function HeaderAndFooter() {
   const location = useLocation();
   const navigate = useNavigate();;
+  const { total, check } = useContext(RequestContext);
+  const [progressValue, setProgressValue] = useState(0);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location]);
 
+  useEffect(() => {
+    const progress = (check / total) * 100;
+    setProgressValue(progress);
+  }, [check, total]);
+
   if (location.pathname === "/") {
     return null;
   }
+
+
 
   return (
     <>
@@ -49,9 +62,20 @@ function HeaderAndFooter() {
         <Perfil src="" />
       </Header>
       <Footer>
-        <button onClick={() => {navigate('/habitos')}}>Hábitos</button>
-        <Circle onClick={() => {navigate('/hoje')}}>Hoje</Circle>
-        <button onClick={() => {navigate('/historico')}}>Histórico</button>
+        <button onClick={() => { navigate('/habitos') }}>Hábitos</button>
+        <Circle onClick={() => { navigate('/hoje') }}>
+
+          <CircularProgressbar value={progressValue} text={`Hoje`} background
+            backgroundPadding={6}
+            styles={buildStyles({
+              backgroundColor: "#3e98c7",
+              textColor: "#fff",
+              pathColor: "#fff",
+              trailColor: "transparent"
+            })} />
+
+        </Circle>
+        <button onClick={() => { navigate('/historico') }}>Histórico</button>
       </Footer>
     </>
   );
@@ -73,6 +97,7 @@ const Header = styled.div`
   background-color:#126BA5;
   height:70px;
   width:100%;
+  z-index: 1;
   display:flex;
   align-items: center;
   justify-content:space-between;
@@ -116,8 +141,8 @@ const Circle = styled.div`
   width: 91px;
   height: 91px;
   margin-bottom: 50px;
-      color: #ffffff;
-      font-family: 'Lexend Deca', sans-serif;
-      font-weight: 400;
-      font-size: 18px;
+  color: #ffffff;
+  font-family: 'Lexend Deca', sans-serif;
+  font-weight: 400;
+  font-size: 18px;
 `

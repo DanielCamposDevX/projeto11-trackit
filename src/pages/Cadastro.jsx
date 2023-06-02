@@ -21,7 +21,7 @@ export default function Cadastro(){
         event.preventDefault();
         const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up",{ email: email, name: nome, image: foto, password: senha});
         request.then(() => navigate("/"));
-        request.catch("Deu ruuim");
+        request.catch(alert("Erro"));
     }
 
     return (
