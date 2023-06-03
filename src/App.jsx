@@ -37,7 +37,7 @@ export default function App() {
 function HeaderAndFooter() {
   const location = useLocation();
   const navigate = useNavigate();;
-  const { total, check } = useContext(RequestContext);
+  const { request,total, check } = useContext(RequestContext);
   const [progressValue, setProgressValue] = useState(0);
 
   useEffect(() => {
@@ -59,7 +59,7 @@ function HeaderAndFooter() {
     <>
       <Header>
         <img src={perfil} alt="Profile" />
-        <Perfil src="" />
+        <Perfil src={request.image} />
       </Header>
       <Footer>
         <button onClick={() => { navigate('/habitos') }}>Hábitos</button>
@@ -109,7 +109,10 @@ const Header = styled.div`
 `
 
 const Perfil = styled.img`
-  border-radius:100px;
+  border-radius:1000px;
+  width:50px;
+  height:50px;
+  margin-right: 20px;
 `
 
 const Footer = styled.div`

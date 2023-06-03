@@ -4,6 +4,9 @@ import { IoAddOutline } from 'react-icons/io5'
 import { useContext, useEffect, useState } from "react";
 import { RequestContext } from "../context/RequestContext";
 import { BsFillTrash3Fill } from 'react-icons/bs'
+import { ThreeDots } from 'react-loader-spinner';
+import { useNavigate } from "react-router-dom";
+
 
 export default function Habitos() {
 
@@ -12,9 +15,11 @@ export default function Habitos() {
     const [expand, setExpand] = useState(false);
     const [nome, setNome] = useState("");
     const [habits, setHabits] = useState([]);
+    const [loading, setLoading] = useState(false);
     const { request } = useContext(RequestContext);
+    const navigate = useNavigate();
 
-    
+
 
     useEffect(() => {
         const config = {
@@ -22,8 +27,9 @@ export default function Habitos() {
                 "Authorization": `Bearer ${request.token}`
             }
         }
-        const promisse = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits",config);
+        const promisse = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
         promisse.then(response => { setHabits(response.data) });
+        promisse.catch(()=> {navigate("/"); alert("Você foi deslogado")})
     }, [])
 
     function handleClick(i) {
@@ -35,16 +41,19 @@ export default function Habitos() {
     }
 
     function handleDelete(id) {
-        const config = {
-            headers: {
-                "Authorization": `Bearer ${request.token}`
+        if (window.confirm("Quer mesmo deletar esse hábito?")) {
+            const config = {
+                headers: {
+                    "Authorization": `Bearer ${request.token}`
+                }
             }
+            const promisse = axios.delete(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}`, config);
+            promisse.then(() => {
+                const promisse2 = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
+                promisse2.then(response => { setHabits(response.data) });
+            })
         }
-        const promisse = axios.delete(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}`, config);
-        promisse.then(() => {
-            const promisse2 = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
-            promisse2.then(response => { setHabits(response.data) });
-        })
+        else { }
     }
 
     function Expandclick() {
@@ -60,6 +69,7 @@ export default function Habitos() {
 
     function handleSubmit(event) {
         event.preventDefault();
+        setLoading(true)
         const config = {
             headers: {
                 "Authorization": `Bearer ${request.token}`
@@ -72,12 +82,19 @@ export default function Habitos() {
         const promisse = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", { name: nome, days: posicoesTrue }, config);
         promisse.then(() => {
             Expandclick();
-
+            setLoading(false);
             const promisse2 = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
             promisse2.then(response => {
                 setHabits(response.data)
             })
+            promisse2.catch(()=>{
+                navigate("/");
+            })
         });
+        promisse.catch(() => {
+            setLoading(false);
+            alert("erro");
+        })
 
     }
 
@@ -87,14 +104,29 @@ export default function Habitos() {
         <Content>
             <Upper><h1>Meus Hábitos</h1> <button onClick={Expandclick}><IoAddOutline /></button></Upper>
             {expand && <Card><form onSubmit={handleSubmit}>
-                <input type="text" placeholder="nome do hábito" value={nome} onChange={e => setNome(e.target.value)} />
+                <input disabled={loading} type="text" placeholder="nome do hábito" value={nome} onChange={e => setNome(e.target.value)} />
                 <Holder>
                     {days.map((day, index) => (
-                        <Day type="button" onClick={() => handleClick(index)} key={index} clicked={clicked[index]}>{day}</Day>
+                        <Day type="button" disabled={loading} onClick={() => handleClick(index)} key={index} clicked={clicked[index]}>{day}</Day>
                     ))}
                 </Holder>
-                <Holder><Cancelar type="Reset" onClick={Expandclick}>Cancelar</Cancelar> <Salvar type="Submit">Salvar</Salvar></Holder>
+                <Holder><Cancelar type="Reset" onClick={Expandclick}>Cancelar</Cancelar>
+                    {!loading && <Salvar type="Submit">Salvar</Salvar>}
+                    {loading && <Salvar type="Submit">
+                        <ThreeDots
+                            height="90%"
+                            width="90%"
+                            radius="9"
+                            color="#FFFFFF"
+                            ariaLabel="three-dots-loading"
+                            wrapperStyle={{}}
+                            wrapperClassName=""
+                            visible={true}
+                        />
+                    </Salvar>}
+                </Holder>
             </form></Card>}
+
             {habits.map((habit) => (
                 <Card1 key={habit.id}>
                     <Holder1>{habit.name}<A onClick={() => handleDelete(habit.id)}><BsFillTrash3Fill /></A></Holder1>

@@ -8,6 +8,8 @@ export const RequestProvider = ({children}) => {
   const [request , setRequest] = useState([]);
   const [check, setCheck] = useState(0);
   const [total, setTotal] = useState(0);
+  const [checkin, setCheckin] = useState([]);
+  
 
   useEffect(() => { if(request.length != 0){
     const config = {
@@ -24,7 +26,7 @@ export const RequestProvider = ({children}) => {
 
 
   return(
-    <RequestContext.Provider value={ {request , setRequest, check ,setCheck, total ,setTotal} }>
+    <RequestContext.Provider value={ {request , setRequest, check ,setCheck, total ,setTotal, checkin ,setCheckin} }>
       {children}
     </RequestContext.Provider>
   )

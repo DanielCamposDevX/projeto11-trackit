@@ -2,13 +2,20 @@ import styled from "styled-components";
 import { useEffect, useContext, useState } from "react";
 import axios from "axios";
 import { RequestContext } from "../context/RequestContext";
+import { useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
+import 'dayjs/locale/pt-br';
 
 export default function Hoje() {
-  const { request, check, setCheck, total, setTotal } = useContext(RequestContext);
+  const { request, check, setCheck, total, setTotal,checkin,setCheckin } = useContext(RequestContext);
   const [habits, setHabits] = useState([]);
-  const [checkin, setCheckin] = useState([]);
+  const [progressValue, setProgressValue] = useState(0);
+  const navigate = useNavigate();
+  const date = dayjs().locale('pt-br').format('dddd, D/MM');
+  const dataformatada = date.charAt(0).toUpperCase() + date.slice(1);
 
   useEffect(() => {
+
     const config = {
       headers: {
         "Authorization": `Bearer ${request.token}`
@@ -20,8 +27,13 @@ export default function Hoje() {
       setHabits(response.data);
       setTotal(response.data.length);
     });
+    promise.catch(() => { navigate("/"); alert("Você foi deslogado") })
   }, []);
 
+  useEffect(() => {
+    const progress = (check / total) * 100;
+    setProgressValue(progress);
+  }, [check, total]);
 
 
   function handleCheck(id) {
@@ -51,19 +63,30 @@ export default function Hoje() {
   return (
     <Content>
       <Upper>
-        <h1></h1>
-        <h2></h2>
+        <h1>{dataformatada}</h1>
+        {!progressValue ? <h2>Nenhum hábito concluído ainda</h2> : <h2 style={{ color: 'green' }}>{progressValue.toFixed(0)}% dos hábitos concluídos</h2>}
       </Upper>
-      {habits.length !== 0 && habits.map(habit => (
-        <Card key={habit.id}>
-          <form >
-            <h1>{habit.name}</h1>
-            <p>Sequência atual: {habit.currentSequence} dias</p>
-            <p>Seu recorde: {habit.highestSequence} dias</p>
-            <input type="checkbox" onChange={() => handleCheck(habit.id)} />
-          </form>
-        </Card>
-      ))}
+      {habits.length !== 0 && habits.map(habit => {
+        const isHabitChecked = checkin.includes(habit.id);
+        return (
+          <Card key={habit.id}>
+            <form>
+              <h1>{habit.name}</h1>
+              {isHabitChecked ? (
+                <p style={{ color: 'green' }}>Sequência atual: {habit.currentSequence + 1} dias</p>
+              ) : (
+                <p>Sequência atual: {habit.currentSequence} dias</p>
+              )}
+              {habit.currentSequence === habit.highestSequence ? (
+                <p style={{ color: 'green' }}>Seu recorde: {habit.highestSequence} dias</p>
+              ) : (
+                <p>Seu recorde: {habit.highestSequence} dias</p>
+              )}
+              <input type="checkbox" onChange={() => handleCheck(habit.id)} checked={isHabitChecked} />
+            </form>
+          </Card>
+        );
+      })}
     </Content>
   );
 }
@@ -94,15 +117,26 @@ const Content = styled.div`
 
 const Upper = styled.div`
     display:flex;
+    flex-direction:column;
     justify-content: space-between;
     width: 100%;
+    height: 90px;
+    color: transparent;
     h1{
        font-family: 'Lexend Deca', sans-serif;
        color:#126BA5;
        font-weight: 400;
        font-size: 23px;
        margin-top:28px;
-       margin-left: 10px;
+       margin-left: 18px;
+    }
+    h2{
+      font-family: 'Lexend Deca', sans-serif;
+       color:#BABABA;
+       font-weight: 400;
+       font-size: 18px;
+       margin-top:8px;
+       margin-left: 18px;
     }
 
 `
@@ -133,6 +167,22 @@ const Card = styled.div`
         :checked{
         color:white; 
         }
+    }
+    h1{
+      font-family: 'Lexend Deca', sans-serif;
+      font-style: normal;
+      font-weight: 400;
+      font-size: 20px;
+      color: #666666;
+    }
+    p{
+      margin-left: 20px;
+      font-family: 'Lexend Deca', sans-serif;
+      font-style: normal;
+      font-weight: 400;
+      font-size: 12px;
+      color: #666666;
+
     }
    
 `

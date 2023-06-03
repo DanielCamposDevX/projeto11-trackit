@@ -3,32 +3,38 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 import logo from '../assets/Group 8.png'
+import { ThreeDots } from 'react-loader-spinner';
 import { RequestContext } from "../context/RequestContext";
 
 
 
 
-export default function Login(props) {
+export default function Login() {
 
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
-    const { request,setRequest } = useContext(RequestContext);
+    const [loading, setLoading] = useState(false);
+    const { request, setRequest } = useContext(RequestContext);
     const navigate = useNavigate();
 
 
 
     function login(event) {
-        
+        setLoading(true);
         event.preventDefault();
 
-        const promisse =  axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login", { email: email, password: senha })
-            
+        const promisse = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login", { email: email, password: senha })
+
         promisse.then(response => {
+            setLoading(false);
             setRequest(response.data);
             navigate("/habitos")
         })
-        promisse.catch(() => alert("Conta não existe"))
-    
+        promisse.catch(() => {
+            alert("Conta não existe")
+            setLoading(false);
+        })
+
     }
 
     function handleSignup() {
@@ -41,9 +47,21 @@ export default function Login(props) {
             <Container>
                 <Logo src={logo} />
                 <form onSubmit={login}>
-                    <input required type="email" placeholder="email" value={email} onChange={e => setEmail(e.target.value)} />
-                    <input required type="password" placeholder="senha" value={senha} onChange={e => setSenha(e.target.value)} />
-                    <Submit type="submit">Entrar</Submit>
+                    <input required disabled={loading}type="email" placeholder="email" value={email} onChange={e => setEmail(e.target.value)} />
+                    <input required disabled={loading} type="password" placeholder="senha" value={senha} onChange={e => setSenha(e.target.value)} />
+                    {!loading && <Submit type="submit">Entrar</Submit>}
+                    {loading && <Submit type="submit">
+                        <ThreeDots
+                            height="20"
+                            width="45"
+                            radius="9"
+                            color="#FFFFFF"
+                            ariaLabel="three-dots-loading"
+                            wrapperStyle={{}}
+                            wrapperClassName=""
+                            visible={true}
+                        />
+                    </Submit>}
                 </form>
                 <A onClick={handleSignup}>Não tem uma conta? Cadastre-se!</A>
             </Container>
@@ -124,6 +142,10 @@ const Submit = styled.button`
     font-weight: 400;
     font-size: 21px;
     line-height: 26px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
 `
 
 
