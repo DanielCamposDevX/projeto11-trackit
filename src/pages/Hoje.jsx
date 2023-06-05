@@ -72,8 +72,8 @@ export default function Hoje() {
           <Card key={habit.id} data-test="today-habit-container">
             <form>
               <h1 data-test="today-habit-name" >{habit.name}</h1>
-              <p style={{ color: isHabitChecked ? '#8FC549' : '#666666' }} data-test="today-habit-sequence" >Sequência atual: {habit.currentSequence} dias</p>
-              <p style={{ color: habit.currentSequence === habit.highestSequence ? '#8FC549' : '#666666' }} data-test="today-habit-record" >Seu recorde: {habit.highestSequence} dias</p>
+              <p data-test="today-habit-sequence" >Sequência atual: <span style={{ color: isHabitChecked ? '#8FC549' : '#666666' }}>{habit.currentSequence} dias</span></p>
+              <p data-test="today-habit-record" >Seu recorde: <span style={{ color: habit.currentSequence === habit.highestSequence && habit.currentSequence !== 0 ? '#8FC549' : '#666666' }} >{habit.highestSequence} dias</span></p>
               <input type="checkbox" onChange={() => handleCheck(habit.id)} checked={isHabitChecked} data-test="today-habit-check-btn" />
             </form>
           </Card>
@@ -140,7 +140,6 @@ const Card = styled.div`
     border-radius: 5px;
     display: flex;
     flex-direction: column;
-    align-items: center;
     margin-top: 20px;
     position:relative;
     form{
@@ -166,6 +165,10 @@ const Card = styled.div`
       font-weight: 400;
       font-size: 20px;
       color: #666666;
+      margin:0px;
+      margin-left:20px;
+      margin-top:15px;
+      margin-bottom:15px;
     }
     p{
       margin-left: 20px;
@@ -174,7 +177,7 @@ const Card = styled.div`
       font-weight: 400;
       font-size: 12px;
       color: #666666;
-
+      margin-top:5px;
     }
    
 `

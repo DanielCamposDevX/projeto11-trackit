@@ -114,8 +114,8 @@ export default function Habitos() {
                     {!loading && <Salvar type="Submit" data-test="habit-create-save-btn">Salvar</Salvar>}
                     {loading && <Salvar type="Submit">
                         <ThreeDots
-                            height="90%"
-                            width="90%"
+                            height="15"
+                            width="35"
                             radius="9"
                             color="#FFFFFF"
                             ariaLabel="three-dots-loading"
@@ -180,7 +180,7 @@ const Upper = styled.div`
        font-weight: 400;
        font-size: 23px;
        margin-top:28px;
-       margin-left: 10px;
+       margin-left: 17px;
     }
     button{
         height:35px;
@@ -282,6 +282,9 @@ const Salvar = styled.button`
     font-size: 16px;
     margin-left: 20px;
     margin-right:20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     `
 
 const Card1 = styled.div`

@@ -7,7 +7,7 @@ import reset from './reset.jsx'
 import styled, { createGlobalStyle } from 'styled-components'
 import { Routes, BrowserRouter, Route, useLocation, useNavigate } from 'react-router-dom'
 import { RequestContext } from './context/RequestContext'
-import perfil from './assets/TrackIt.png'
+import logo from './assets/TrackIt.png'
 import { useContext, useEffect, useState } from 'react'
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
@@ -58,7 +58,7 @@ function HeaderAndFooter() {
   return (
     <>
       <Header data-test="header">
-        <img src={perfil} alt="Profile" data-test="avatar" />
+        <img src={logo} alt="Profile" data-test="avatar" />
         <Perfil src={request.image} />
       </Header>
       <Footer data-test="menu">
@@ -103,7 +103,7 @@ const Header = styled.div`
   justify-content:space-between;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
   img{
-    margin-left:10px;
+    margin-left:20px;
   }
   
 `
