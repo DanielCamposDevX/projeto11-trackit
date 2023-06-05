@@ -21,7 +21,7 @@ export default function Cadastro(){
         event.preventDefault();
         const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up",{ email: email, name: nome, image: foto, password: senha});
         request.then(() => navigate("/"));
-        request.catch(alert("Erro"));
+        request.catch(() => alert("Erro"));
     }
 
     return (
@@ -29,13 +29,13 @@ export default function Cadastro(){
             <Container>
                 <Logo src={logo} />
                 <form onSubmit={Signup}>
-                    <input required type="email" placeholder="email" value={email} onChange={e => setEmail(e.target.value)} />
-                    <input required type="password" placeholder="senha" value={senha} onChange={e => setSenha(e.target.value)} />
-                    <input required type="text" placeholder="nome" value={nome} onChange={e => setNome(e.target.value)} />
-                    <input required type="url" placeholder="foto" value={foto} onChange={e => setFoto(e.target.value)} />
-                    <Submit type="submit">Cadastrar</Submit>
+                    <input required type="email" placeholder="email" value={email} onChange={e => setEmail(e.target.value)} data-test="email-input"/>
+                    <input required type="password" placeholder="senha" value={senha} onChange={e => setSenha(e.target.value)} data-test="password-input"/>
+                    <input required type="text" placeholder="nome" value={nome} onChange={e => setNome(e.target.value)} data-test="user-name-input"/>
+                    <input required type="url" placeholder="foto" value={foto} onChange={e => setFoto(e.target.value)} data-test="user-image-input"/>
+                    <Submit type="submit" data-test="signup-btn" >Cadastrar</Submit>
                 </form>
-                <A onClick={() => navigate("/")}>Já tem uma conta? Faça login!</A>
+                <A onClick={() => navigate("/")} data-test="login-link">Já tem uma conta? Faça login!</A>
                 
             </Container>
         </>

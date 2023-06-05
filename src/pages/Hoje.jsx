@@ -7,7 +7,7 @@ import dayjs from "dayjs";
 import 'dayjs/locale/pt-br';
 
 export default function Hoje() {
-  const { request, check, setCheck, total, setTotal,checkin,setCheckin } = useContext(RequestContext);
+  const { request, check, setCheck, total, setTotal, checkin, setCheckin } = useContext(RequestContext);
   const [habits, setHabits] = useState([]);
   const [progressValue, setProgressValue] = useState(0);
   const navigate = useNavigate();
@@ -63,26 +63,18 @@ export default function Hoje() {
   return (
     <Content>
       <Upper>
-        <h1>{dataformatada}</h1>
-        {!progressValue ? <h2>Nenhum hábito concluído ainda</h2> : <h2 style={{ color: 'green' }}>{progressValue.toFixed(0)}% dos hábitos concluídos</h2>}
+        <h1 data-test="today" >{dataformatada}</h1>
+        {!progressValue ? <h2 data-test="today-counter">Nenhum hábito concluído ainda</h2> : <h2 style={{ color: 'green' }}>{progressValue.toFixed(0)}% dos hábitos concluídos</h2>}
       </Upper>
       {habits.length !== 0 && habits.map(habit => {
         const isHabitChecked = checkin.includes(habit.id);
         return (
-          <Card key={habit.id}>
+          <Card key={habit.id} data-test="today-habit-container">
             <form>
-              <h1>{habit.name}</h1>
-              {isHabitChecked ? (
-                <p style={{ color: 'green' }}>Sequência atual: {habit.currentSequence + 1} dias</p>
-              ) : (
-                <p>Sequência atual: {habit.currentSequence} dias</p>
-              )}
-              {habit.currentSequence === habit.highestSequence ? (
-                <p style={{ color: 'green' }}>Seu recorde: {habit.highestSequence} dias</p>
-              ) : (
-                <p>Seu recorde: {habit.highestSequence} dias</p>
-              )}
-              <input type="checkbox" onChange={() => handleCheck(habit.id)} checked={isHabitChecked} />
+              <h1 data-test="today-habit-name" >{habit.name}</h1>
+              <p style={{ color: isHabitChecked ? '#8FC549' : '#666666' }} data-test="today-habit-sequence" >Sequência atual: {habit.currentSequence + 1} dias</p>
+              <p style={{ color: habit.currentSequence === habit.highestSequence ? '#8FC549' : '#666666' }} data-test="today-habit-record" >Seu recorde: {habit.highestSequence} dias</p>
+              <input type="checkbox" onChange={() => handleCheck(habit.id)} checked={isHabitChecked} data-test="today-habit-check-btn" />
             </form>
           </Card>
         );

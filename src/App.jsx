@@ -49,7 +49,7 @@ function HeaderAndFooter() {
     setProgressValue(progress);
   }, [check, total]);
 
-  if (location.pathname === "/") {
+  if (location.pathname === "/" || location.pathname === "/cadastro") {
     return null;
   }
 
@@ -57,13 +57,13 @@ function HeaderAndFooter() {
 
   return (
     <>
-      <Header>
-        <img src={perfil} alt="Profile" />
+      <Header data-test="header">
+        <img src={perfil} alt="Profile" data-test="avatar" />
         <Perfil src={request.image} />
       </Header>
-      <Footer>
-        <button onClick={() => { navigate('/habitos') }}>Hábitos</button>
-        <Circle onClick={() => { navigate('/hoje') }}>
+      <Footer data-test="menu">
+        <button onClick={() => { navigate('/habitos') }} data-test="habit-link">Hábitos</button>
+        <Circle onClick={() => { navigate('/hoje') }} data-test="today-link" >
 
           <CircularProgressbar value={progressValue} text={`Hoje`} background
             backgroundPadding={6}
@@ -75,7 +75,7 @@ function HeaderAndFooter() {
             })} />
 
         </Circle>
-        <button onClick={() => { navigate('/historico') }}>Histórico</button>
+        <button onClick={() => { navigate('/historico') }} data-test="history-link" >Histórico</button>
       </Footer>
     </>
   );

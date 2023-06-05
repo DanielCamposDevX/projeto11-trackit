@@ -102,16 +102,16 @@ export default function Habitos() {
 
     return (
         <Content>
-            <Upper><h1>Meus Hábitos</h1> <button onClick={Expandclick}><IoAddOutline /></button></Upper>
-            {expand && <Card><form onSubmit={handleSubmit}>
-                <input disabled={loading} type="text" placeholder="nome do hábito" value={nome} onChange={e => setNome(e.target.value)} />
+            <Upper><h1>Meus Hábitos</h1> <button onClick={Expandclick} data-test="habit-create-btn"><IoAddOutline /></button></Upper>
+            {expand && <Card data-test="habit-create-container"><form onSubmit={handleSubmit}>
+                <input disabled={loading} type="text" placeholder="nome do hábito" value={nome} onChange={e => setNome(e.target.value)} data-test="habit-name-input" />
                 <Holder>
                     {days.map((day, index) => (
-                        <Day type="button" disabled={loading} onClick={() => handleClick(index)} key={index} clicked={clicked[index]}>{day}</Day>
+                        <Day type="button" disabled={loading} onClick={() => handleClick(index)} key={index} clicked={clicked[index]} data-test="habit-day" >{day}</Day>
                     ))}
                 </Holder>
-                <Holder><Cancelar type="Reset" onClick={Expandclick}>Cancelar</Cancelar>
-                    {!loading && <Salvar type="Submit">Salvar</Salvar>}
+                <Holder><Cancelar type="Reset" onClick={Expandclick} data-test="habit-create-cancel-btn">Cancelar</Cancelar>
+                    {!loading && <Salvar type="Submit" data-test="habit-create-save-btn">Salvar</Salvar>}
                     {loading && <Salvar type="Submit">
                         <ThreeDots
                             height="90%"
@@ -128,11 +128,11 @@ export default function Habitos() {
             </form></Card>}
 
             {habits.map((habit) => (
-                <Card1 key={habit.id}>
-                    <Holder1>{habit.name}<A onClick={() => handleDelete(habit.id)}><BsFillTrash3Fill /></A></Holder1>
+                <Card1 key={habit.id} data-test="habit-container">
+                    <Holder1 data-test="habit-name">{habit.name}<A onClick={() => handleDelete(habit.id)} data-test="habit-delete-btn"><BsFillTrash3Fill /></A></Holder1>
                     <Holder1>
                         {days.map((day, index) => (
-                            <Day key={index} style={{ backgroundColor: habit.days.includes(index) ? '#DBDBDB' : '#FFFFFF', color: habit.days.includes(index) ? '#FFFFFF' : '#DBDBDB' }}>
+                            <Day data-test="habit-day" key={index} style={{ backgroundColor: habit.days.includes(index) ? '#DBDBDB' : '#FFFFFF', color: habit.days.includes(index) ? '#FFFFFF' : '#DBDBDB' }} >
                                 {day}
                             </Day>
                         ))}

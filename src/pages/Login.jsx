@@ -47,9 +47,9 @@ export default function Login() {
             <Container>
                 <Logo src={logo} />
                 <form onSubmit={login}>
-                    <input required disabled={loading}type="email" placeholder="email" value={email} onChange={e => setEmail(e.target.value)} />
-                    <input required disabled={loading} type="password" placeholder="senha" value={senha} onChange={e => setSenha(e.target.value)} />
-                    {!loading && <Submit type="submit">Entrar</Submit>}
+                    <input required disabled={loading}type="email" placeholder="email" value={email} onChange={e => setEmail(e.target.value)}  data-test="email-input"/>
+                    <input required disabled={loading} type="password" placeholder="senha" value={senha} onChange={e => setSenha(e.target.value)}  data-test="password-input" />
+                    {!loading && <Submit type="submit" data-test="login-btn" >Entrar</Submit>}
                     {loading && <Submit type="submit">
                         <ThreeDots
                             height="20"
@@ -63,7 +63,7 @@ export default function Login() {
                         />
                     </Submit>}
                 </form>
-                <A onClick={handleSignup}>Não tem uma conta? Cadastre-se!</A>
+                <A onClick={handleSignup} data-test="signup-link" >Não tem uma conta? Cadastre-se!</A>
             </Container>
         </>
 
