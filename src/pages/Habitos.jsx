@@ -21,6 +21,7 @@ export default function Habitos() {
 
 
     useEffect(() => {
+        if(localStorage.length > 1){
         const img = localStorage.getItem("imagem");
         const token = localStorage.getItem("token");
         const id = localStorage.getItem("id");
@@ -34,7 +35,8 @@ export default function Habitos() {
             const promisse = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
             promisse.then(response => { setHabits(response.data) });
             promisse.catch(() => { navigate("/"); alert("Você foi deslogado") })
-        }
+        }}
+        else{navigate("/")}
     }, [])
 
 

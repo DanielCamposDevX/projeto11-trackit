@@ -11,6 +11,7 @@ import logo from './assets/TrackIt.png'
 import { useContext, useEffect, useState } from 'react'
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import { AiOutlinePoweroff } from 'react-icons/ai'
 
 export default function App() {
 
@@ -37,7 +38,7 @@ export default function App() {
 function HeaderAndFooter() {
   const location = useLocation();
   const navigate = useNavigate();;
-  const { request,total, check } = useContext(RequestContext);
+  const { request, total, check } = useContext(RequestContext);
   const [progressValue, setProgressValue] = useState(0);
 
   useEffect(() => {
@@ -53,13 +54,22 @@ function HeaderAndFooter() {
     return null;
   }
 
+function Logoff(){
+  localStorage.removeItem("imagem");
+  localStorage.removeItem("token");
+  localStorage.removeItem("id")
+  navigate("/")
+}
 
 
   return (
     <>
       <Header data-test="header">
-        <img src={logo} alt="Profile"  />
-        <Perfil src={request.image} data-test="avatar"/>
+        <img src={logo} alt="Profile" />
+        <Holder>
+          <Perfil src={request.image} data-test="avatar" />
+          <Sair onClick={Logoff}><AiOutlinePoweroff /></Sair>
+        </Holder>
       </Header>
       <Footer data-test="menu">
         <button onClick={() => { navigate('/habitos') }} data-test="habit-link">Hábitos</button>
@@ -89,6 +99,21 @@ function HeaderAndFooter() {
 const Reset = createGlobalStyle`
   ${reset}
 `
+const Holder = styled.div `
+  display:flex;
+  margin-right:5px;
+`
+const Sair = styled.button`
+  display:flex;
+  align-items: center;
+  justify-content:center;
+  font-size:30px;
+  color:white;
+  border:none;
+  background-color:transparent;
+  width:40px;
+  height:50px;
+  `
 
 const Header = styled.div`
   position: fixed;
@@ -112,7 +137,6 @@ const Perfil = styled.img`
   border-radius:1000px;
   width:50px;
   height:50px;
-  margin-right: 20px;
 `
 
 const Footer = styled.div`

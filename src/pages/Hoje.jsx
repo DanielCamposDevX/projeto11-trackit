@@ -15,7 +15,7 @@ export default function Hoje() {
   const dataformatada = date.charAt(0).toUpperCase() + date.slice(1);
 
 
-  useEffect(() => {
+  useEffect(() => { if(localStorage.length > 1){
     const img = localStorage.getItem("imagem");
     const token = localStorage.getItem("token");
     const id = localStorage.getItem("id");
@@ -33,7 +33,8 @@ export default function Hoje() {
           setTotal(response.data.length);
         });
         promise.catch(() => { navigate("/") })
-      }
+      }}
+      else{navigate ("/")}
 },[])
 
 
@@ -162,7 +163,8 @@ const Card = styled.div`
         top: 10px;
         right: 5px;
         border-radius: 5px;
-        accent-color: #5ca101;
+        border: none;
+        accent-color: #8FC549;
         content: '';
         :checked{
         color:white; 
