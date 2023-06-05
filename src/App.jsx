@@ -58,8 +58,8 @@ function HeaderAndFooter() {
   return (
     <>
       <Header data-test="header">
-        <img src={logo} alt="Profile" data-test="avatar" />
-        <Perfil src={request.image} />
+        <img src={logo} alt="Profile"  />
+        <Perfil src={request.image} data-test="avatar"/>
       </Header>
       <Footer data-test="menu">
         <button onClick={() => { navigate('/habitos') }} data-test="habit-link">Hábitos</button>

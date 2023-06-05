@@ -1,6 +1,19 @@
 import styled from "styled-components"
+import { useEffect } from "react";
+import { RequestContext } from "../context/RequestContext";
+import { useContext } from "react";
 
 export default function Historico(){
+   const {setRequest} = useContext(RequestContext); 
+
+    useEffect(() => {
+        const img = localStorage.getItem("imagem");
+        const token = localStorage.getItem("token");
+        const id = localStorage.getItem("id");
+        if(token !== null){
+            setRequest({image: img , token: token, id: id});
+        }
+    },[])
 
     return(
         <Content>

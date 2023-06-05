@@ -16,21 +16,28 @@ export default function Habitos() {
     const [nome, setNome] = useState("");
     const [habits, setHabits] = useState([]);
     const [loading, setLoading] = useState(false);
-    const { request } = useContext(RequestContext);
+    const { request, setRequest } = useContext(RequestContext);
     const navigate = useNavigate();
 
 
-
     useEffect(() => {
-        const config = {
-            headers: {
-                "Authorization": `Bearer ${request.token}`
+        const img = localStorage.getItem("imagem");
+        const token = localStorage.getItem("token");
+        const id = localStorage.getItem("id");
+        if (token !== null) {
+            setRequest({ image: img, token: token, id: id });
+            const config = {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
             }
+            const promisse = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
+            promisse.then(response => { setHabits(response.data) });
+            promisse.catch(() => { navigate("/"); alert("Você foi deslogado") })
         }
-        const promisse = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
-        promisse.then(response => { setHabits(response.data) });
-        promisse.catch(()=> {navigate("/"); alert("Você foi deslogado")})
     }, [])
+
+
 
     function handleClick(i) {
         setClicked(prevClicked => {
@@ -87,7 +94,7 @@ export default function Habitos() {
             promisse2.then(response => {
                 setHabits(response.data)
             })
-            promisse2.catch(()=>{
+            promisse2.catch(() => {
                 navigate("/");
             })
         });
@@ -110,20 +117,18 @@ export default function Habitos() {
                         <Day type="button" disabled={loading} onClick={() => handleClick(index)} key={index} clicked={clicked[index]} data-test="habit-day" >{day}</Day>
                     ))}
                 </Holder>
-                <Holder><Cancelar type="Reset" onClick={Expandclick} data-test="habit-create-cancel-btn">Cancelar</Cancelar>
-                    {!loading && <Salvar type="Submit" data-test="habit-create-save-btn">Salvar</Salvar>}
-                    {loading && <Salvar type="Submit">
-                        <ThreeDots
-                            height="15"
-                            width="35"
-                            radius="9"
-                            color="#FFFFFF"
-                            ariaLabel="three-dots-loading"
-                            wrapperStyle={{}}
-                            wrapperClassName=""
-                            visible={true}
-                        />
-                    </Salvar>}
+                <Holder><Cancelar type="Reset" disabled={loading} onClick={Expandclick} data-test="habit-create-cancel-btn">Cancelar</Cancelar>
+                    <Salvar type="Submit" disabled={loading} data-test="habit-create-save-btn">
+                        {!loading ? 'Salvar' : <ThreeDots
+                        height="15"
+                        width="35"
+                        radius="9"
+                        color="#FFFFFF"
+                        ariaLabel="three-dots-loading"
+                        wrapperStyle={{}}
+                        wrapperClassName=""
+                        visible={true}
+                    />}</Salvar>
                 </Holder>
             </form></Card>}
 

@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
@@ -18,6 +18,15 @@ export default function Login() {
     const navigate = useNavigate();
 
 
+    useEffect(() => {
+        const img = localStorage.getItem("imagem");
+        const token = localStorage.getItem("token");
+        const id = localStorage.getItem("id");
+        if(token !== null){
+            setRequest({image: img , token: token, id: id});
+            navigate("/hoje");
+        }
+    },[])
 
     function login(event) {
         setLoading(true);
@@ -26,6 +35,9 @@ export default function Login() {
         const promisse = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login", { email: email, password: senha })
 
         promisse.then(response => {
+            localStorage.setItem("imagem", response.data.image);
+            localStorage.setItem("token", response.data.token);
+            localStorage.setItem("id", response.data.id);
             setLoading(false);
             setRequest(response.data);
             navigate("/hoje")
@@ -34,7 +46,6 @@ export default function Login() {
             alert("Conta não existe")
             setLoading(false);
         })
-
     }
 
     function handleSignup() {

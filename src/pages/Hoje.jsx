@@ -7,28 +7,37 @@ import dayjs from "dayjs";
 import 'dayjs/locale/pt-br';
 
 export default function Hoje() {
-  const { request, check, setCheck, total, setTotal, checkin, setCheckin } = useContext(RequestContext);
+  const { setRequest, request, check, setCheck, total, setTotal, checkin, setCheckin } = useContext(RequestContext);
   const [habits, setHabits] = useState([]);
   const [progressValue, setProgressValue] = useState(0);
   const navigate = useNavigate();
   const date = dayjs().locale('pt-br').format('dddd, D/MM');
   const dataformatada = date.charAt(0).toUpperCase() + date.slice(1);
 
+
   useEffect(() => {
-
-    const config = {
-      headers: {
-        "Authorization": `Bearer ${request.token}`
+    const img = localStorage.getItem("imagem");
+    const token = localStorage.getItem("token");
+    const id = localStorage.getItem("id");
+    if(token !== null){
+        setRequest({image: img , token: token, id: id});
+        const config = {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        };
+    
+        const promise = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today", config);
+        promise.then(response => {
+          setHabits(response.data);
+          setTotal(response.data.length);
+        });
+        promise.catch(() => { navigate("/") })
       }
-    };
+},[])
 
-    const promise = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today", config);
-    promise.then(response => {
-      setHabits(response.data);
-      setTotal(response.data.length);
-    });
-    promise.catch(() => { navigate("/"); alert("Você foi deslogado") })
-  }, []);
+
+   
 
   useEffect(() => {
     const progress = (check / total) * 100;
@@ -64,7 +73,7 @@ export default function Hoje() {
     <Content>
       <Upper>
         <h1 data-test="today" >{dataformatada}</h1>
-        {!progressValue ? <h2 data-test="today-counter">Nenhum hábito concluído ainda</h2> : <h2 style={{ color: 'green' }}>{progressValue.toFixed(0)}% dos hábitos concluídos</h2>}
+        {!progressValue ? <h2 data-test="today-counter">Nenhum hábito concluído ainda</h2> : <h2 data-test="today-counter" style={{ color: 'green' }}>{progressValue.toFixed(0)}% dos hábitos concluídos</h2>}
       </Upper>
       {habits.length !== 0 && habits.map(habit => {
         const isHabitChecked = checkin.includes(habit.id);
@@ -72,7 +81,7 @@ export default function Hoje() {
           <Card key={habit.id} data-test="today-habit-container">
             <form>
               <h1 data-test="today-habit-name" >{habit.name}</h1>
-              <p data-test="today-habit-sequence" >Sequência atual: <span style={{ color: isHabitChecked ? '#8FC549' : '#666666' }}>{habit.currentSequence} dias</span></p>
+              <p data-test="today-habit-sequence" >Sequência atual: <span style={{ color: isHabitChecked || habit.currentSequence === habit.highestSequence  ? '#8FC549' : '#666666' }}>{habit.currentSequence} dias</span></p>
               <p data-test="today-habit-record" >Seu recorde: <span style={{ color: habit.currentSequence === habit.highestSequence && habit.currentSequence !== 0 ? '#8FC549' : '#666666' }} >{habit.highestSequence} dias</span></p>
               <input type="checkbox" onChange={() => handleCheck(habit.id)} checked={isHabitChecked} data-test="today-habit-check-btn" />
             </form>
