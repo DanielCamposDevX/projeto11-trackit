@@ -72,7 +72,7 @@ export default function Hoje() {
           <Card key={habit.id} data-test="today-habit-container">
             <form>
               <h1 data-test="today-habit-name" >{habit.name}</h1>
-              <p style={{ color: isHabitChecked ? '#8FC549' : '#666666' }} data-test="today-habit-sequence" >Sequência atual: {habit.currentSequence + 1} dias</p>
+              <p style={{ color: isHabitChecked ? '#8FC549' : '#666666' }} data-test="today-habit-sequence" >Sequência atual: {habit.currentSequence} dias</p>
               <p style={{ color: habit.currentSequence === habit.highestSequence ? '#8FC549' : '#666666' }} data-test="today-habit-record" >Seu recorde: {habit.highestSequence} dias</p>
               <input type="checkbox" onChange={() => handleCheck(habit.id)} checked={isHabitChecked} data-test="today-habit-check-btn" />
             </form>
