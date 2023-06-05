@@ -28,7 +28,7 @@ export default function Login() {
         promisse.then(response => {
             setLoading(false);
             setRequest(response.data);
-            navigate("/habitos")
+            navigate("/hoje")
         })
         promisse.catch(() => {
             alert("Conta não existe")
@@ -47,21 +47,18 @@ export default function Login() {
             <Container>
                 <Logo src={logo} />
                 <form onSubmit={login}>
-                    <input required disabled={loading}type="email" placeholder="email" value={email} onChange={e => setEmail(e.target.value)}  data-test="email-input"/>
-                    <input required disabled={loading} type="password" placeholder="senha" value={senha} onChange={e => setSenha(e.target.value)}  data-test="password-input" />
-                    {!loading && <Submit type="submit" data-test="login-btn" >Entrar</Submit>}
-                    {loading && <Submit type="submit">
-                        <ThreeDots
-                            height="20"
-                            width="45"
-                            radius="9"
-                            color="#FFFFFF"
-                            ariaLabel="three-dots-loading"
-                            wrapperStyle={{}}
-                            wrapperClassName=""
-                            visible={true}
-                        />
-                    </Submit>}
+                    <input required disabled={loading} type="email" placeholder="email" value={email} onChange={e => setEmail(e.target.value)} data-test="email-input" />
+                    <input required disabled={loading} type="password" placeholder="senha" value={senha} onChange={e => setSenha(e.target.value)} data-test="password-input" />
+                    <Submit type="submit" disabled={loading} data-test="login-btn" >{!loading ? 'Entrar' : <ThreeDots
+                        height="20"
+                        width="45"
+                        radius="9"
+                        color="#FFFFFF"
+                        ariaLabel="three-dots-loading"
+                        wrapperStyle={{}}
+                        wrapperClassName=""
+                        visible={true}
+                    />} </Submit>
                 </form>
                 <A onClick={handleSignup} data-test="signup-link" >Não tem uma conta? Cadastre-se!</A>
             </Container>
